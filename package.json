@@ -1,0 +1,28 @@
+{
+  "name": "proj_2_vp",
+  "version": "1.0.0",
+  "description": "2 proj vp kurm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://ukusk@github.com/ukusk/project_2_VP.git"
+  },
+  "keywords": [
+    "node.js",
+    "express.js",
+    "tlu",
+    "vp"
+  ],
+  "author": "ukusk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ukusk/project_2_VP/issues"
+  },
+  "homepage": "https://github.com/ukusk/project_2_VP#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
