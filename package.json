@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ukusk/project_2_VP#readme",
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^5.1.0"
   }
 }
