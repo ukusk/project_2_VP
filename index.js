@@ -3,9 +3,11 @@ const fs = require("fs");
 //pÃ¤ringu lahtiharutaja POST jaoks
 const bodyparser = require("body-parser");
 //SQL andmebaasi moodul
-const mysql =require("mysql2");
+//const mysql =require("mysql2");
 const dateEt = require("./src/dateTimeET");
 const dbInfo = require("../../VP2025cfg");
+//kuna kasutame async, siis impordime mysql2/promise mooduli
+const mysql = require("mysql2/promise");
 const textRef = "public/txt/vanasonad.txt";
 //kÃ¤ivitan express.js funktsiooni ja annan talle nimeks "app"
 const app = express();
@@ -17,12 +19,19 @@ app.use(express.static("public"));
 app.use(bodyparser.urlencoded({extended: false}));
 
 //loon andmebaasiÃ¼henduse
-const conn = mysql.createConnection({
+/* const conn = mysql.createConnection({
 	host: dbInfo.configData.host,
 	user: dbInfo.configData.user,
 	password: dbInfo.configData.passWord,
-	database: "if25_inga_petuhhov_TA"
-});
+	database: "if25_ukukurm"
+}); */
+
+const dbConf = {
+	host: dbInfo.configData.host,
+	user: dbInfo.configData.user,
+	password: dbInfo.configData.passWord,
+	database: "if25_ukukurm"
+}
 
 app.get("/", (req, res)=>{
 	//res.send("Express.js lÃ¤ks kÃ¤ima ja serveerib veebi!");
@@ -93,46 +102,8 @@ app.get("/visitlog", (req, res)=>{
 	});
 });
 
-app.get("/Eestifilm", (req, res)=>{
-	res.render("eestifilm");
-});
+const eestifilmRouter = require("./routes/eestifilmRoutes");
+app.use("/Eestifilm", eestifilmRouter);
 
-app.get("/Eestifilm/inimesed", (req, res)=>{
-	const sqlReq = "SELECT * FROM person";
-	conn.execute(sqlReq, (err, sqlres)=>{
-		if(err){
-			throw(err);
-		}
-		else {
-			console.log(sqlres);
-			res.render("filmiinimesed", {personList: sqlres});
-		}
-	});
-	//res.render("filmiinimesed");
-});
-
-app.get("/Eestifilm/filmiinimesed_add", (req, res)=>{
-	res.render("filmiinimesed_add", {notice: "Ootan sisestust"});
-});
-
-app.post("/Eestifilm/filmiinimesed_add", (req, res)=>{
-	console.log(req.body);
-	//kas andmed on olemas
-	if(!req.body.firstNameInput || !req.body.lastNameInput || !req.body.bornInput || req.body.bornInput >= new Date()){
-	  res.render("filmiinimesed_add", {notice: "Osa andmeid oli puudu vÃµi ebakorrektsed"});
-	}
-	else {
-		let sqlReq = "INSERT INTO person (first_name, last_name, born, deceased) VALUES (?,?,?,?)";
-		conn.execute(sqlReq, [req.body.firstNameInput, req.body.lastNameInput, req.body.bornInput, req.body.deceasedInput], (err, sqlres)=>{
-			if(err){
-				res.render("filmiinimesed_add", {notice: "Andmete salvestamine ebaÃµnnestus"});
-			}
-			else {
-				res.render("filmiinimesed_add", {notice: "Andmed salvestatud"});
-			}
-		});
-		
-	}
-});
 
 app.listen(5111);
